@@ -98,7 +98,8 @@ app.post('/getLink', cors(corsOptions), async(req,res) => {
 		  
 		  response.data.on('data', chunk => {
 			downloadedLength += chunk.length;
-			progressData = (downloadedLength / totalLength) * 100;
+			var progressData = (downloadedLength / totalLength) * 100;
+
 
 			//console.log(`Download progress: ${progressData.toFixed(2)}%`);
 		  });
