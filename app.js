@@ -17,15 +17,6 @@ const { upload } = pkg;
 const app = express();
 const server = http.createServer(app);
 
-// Progress data for downloads
-let progressData = { progress: 0 };
-
-// Cloudfront Url 
-var cloudFrontUrl = ''; 
-
-// filename
-var filename = ''; 
-
 
 // Grab secrets created
 var accessKeyId = JSON.parse(await getSecret('app-user-access-secret','us-east-1'))['appUserAccessKey'];
@@ -87,8 +78,8 @@ app.post('/getLink', cors(corsOptions), async(req,res) => {
 	
 
 	// Grab the video stream
-	const videoStream = ytdl(youtubeLink, { quality: 'highestvideo', filter: 'audioandvideo' });
-	filename = `${videoTitle.replace(/[^\w\s]/g, '_').replace(/ /g,"_")}.mp4`
+	const videoStream = ytdl(youtubeLink, { quality: 'highest', filter: 'audioandvideo' });
+	const filename = `${videoTitle.replace(/[^\w\s]/g, '_').replace(/ /g,"_")}.mp4`
 
 	
 	// function to download youtube video
@@ -109,7 +100,7 @@ app.post('/getLink', cors(corsOptions), async(req,res) => {
 			downloadedLength += chunk.length;
 			progressData = (downloadedLength / totalLength) * 100;
 
-			console.log(`Download progress: ${progressData.toFixed(2)}%`);
+			//console.log(`Download progress: ${progressData.toFixed(2)}%`);
 		  });
 		  
 		  response.data.pipe(writeStream);
@@ -173,7 +164,7 @@ app.post('/getLink', cors(corsOptions), async(req,res) => {
 		
 		
 		// Create CloudFront signed URL
-		cloudFrontUrl = getSignedUrl({
+		const cloudFrontUrl = getSignedUrl({
 			url:`https://${cloudfrontDomain}/${filename}`,
 			dateLessThan: new Date(Date.now() + 1000 * 60 * 5),
 			privateKey: privateKey,
@@ -182,45 +173,8 @@ app.post('/getLink', cors(corsOptions), async(req,res) => {
 		res.status(200).send({cloudfront: cloudFrontUrl}); 
 		res.end(); 
 		console.log("Closing connection..."); 
-		progressData = { progress: 0 };
 	});
-}); 
-
-
-/*
-// Endpoint to get progress of download
-app.get('/getProgress', cors(corsOptions), async(req,res) => {
-	res.setHeader('Content-Type', 'text/event-stream');
-  	res.setHeader('Cache-Control', 'no-cache');
-  	res.setHeader('Connection', 'keep-alive');
-
-	// Send progress data back to the client
-	res.status(200).send({progress: progressData}); 
-}); 
-*/ 
-
-
-
-/*
-// Endpoint called to delete the file in the s3 bucket
-app.get('/finished', cors(corsOptions), async(req,res) => {
-
-	// Send progress data back to the client
-	const deleteCommand = new DeleteObjectCommand({
-		Bucket: bucket,
-		Key: filename
-	  });
-	
-	// Deleting the object
-	try {
-		const data = await s3.send(deleteCommand);
-		console.log('File deleted successfully from s3 bucket:', data);
-	} catch (error) {
-		console.error('Error deleting file:', error);
-	}
-}); 
-*/ 
-
+});
 
 // Define port to listen on. Default port is 8080. 
 const port = process.env.PORT || 3000;
