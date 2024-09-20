@@ -26,6 +26,8 @@ var cloudfrontDomain = JSON.parse(await getSecret('app-cloudfront-domain-secret'
 var privateKey = JSON.parse(await getSecret('app-private-key','us-east-1'))['appPrivateKey'];
 var keyPairId = JSON.parse(await getSecret('app-user-pubkey-id-secret','us-east-1'))['appPubKeyId']; 
 
+const cors = require('cors');
+
 /*
 // CORS options to allow GET and POST requests from youtube.com domain
 const corsOptions = {
@@ -45,7 +47,9 @@ app.use((req, res, next) => {
 });
 */ 
 
+app.use(cors());
 
+/*
 app.options('*', (req, res) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS'); 
@@ -53,7 +57,7 @@ app.options('*', (req, res) => {
     res.sendStatus(204);
 	next();
 });
-
+*/ 
 
 
 
@@ -66,7 +70,7 @@ app.use(json());
 
 
 // Endpoint to generate the download link
-app.post('/getLink', /*cors(corsOptions),*/ async(req,res) => {
+app.post('/getLink', cors(),/*cors(corsOptions),*/ async(req,res) => {
 	// Get the data from client request
 	const data = req.body
 
