@@ -44,6 +44,16 @@ app.use((req, res, next) => {
 	next();
 });
 
+/*
+app.options('*', (req, res) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS'); 
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization'); 
+    res.sendStatus(204);
+});
+*/ 
+
+
 
 // Use the CORS options for all routes
 //app.use(cors(corsOptions));
@@ -54,7 +64,7 @@ app.use(json());
 
 
 // Endpoint to generate the download link
-app.post('/getLink', cors(corsOptions), async(req,res) => {
+app.post('/getLink', /*cors(corsOptions),*/ async(req,res) => {
 	// Get the data from client request
 	const data = req.body
 
