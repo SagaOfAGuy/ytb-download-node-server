@@ -26,13 +26,14 @@ var cloudfrontDomain = JSON.parse(await getSecret('app-cloudfront-domain-secret'
 var privateKey = JSON.parse(await getSecret('app-private-key','us-east-1'))['appPrivateKey'];
 var keyPairId = JSON.parse(await getSecret('app-user-pubkey-id-secret','us-east-1'))['appPubKeyId']; 
 
-
+/*
 // CORS options to allow GET and POST requests from youtube.com domain
 const corsOptions = {
 	origin: '*',
 	methods: ['GET', 'POST', 'OPTIONS'],
 	allowedHeaders: ['Content-Length','Accept-Ranges','Origin', 'Content-Type', 'Content-Disposition'],
 };
+*/ 
 
 
 // Apply CORS option to the express app
