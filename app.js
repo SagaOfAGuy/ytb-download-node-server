@@ -46,7 +46,7 @@ app.use((req, res, next) => {
 
 
 // Use the CORS options for all routes
-app.use(cors(corsOptions));
+//app.use(cors(corsOptions));
 
 
 // Allow express to parse JSON
